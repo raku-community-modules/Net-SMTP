@@ -37,12 +37,23 @@ method data() {
     return self.send("DATA");
 }
 
-method payload($mail) {
-    if $mail.substr(*-2,2) ne "\r\n" {
-        return self.send($mail ~ "\r\n.");
-    } else {
-        return self.send($mail ~ ".");
+method payload($mail is copy) {
+
+    # Dot-stuffing!
+    # RFC 5321, section 4.5.2:
+    # every line that begins with a dot has one additional dot prepended to it.
+    my @lines = $mail.split("\r\n");
+    for @lines -> $_ is rw {
+        if $_.substr(0,1) eq '.' {
+            $_ = '.' ~ $_;
+        }
     }
+    $mail = @lines.join("\r\n");
+
+    if $mail.substr(*-2,2) ne "\r\n" {
+        $mail ~= "\r\n";
+    }
+    return self.send($mail ~ ".");
 }
 
 method rset() {
