@@ -11,3 +11,10 @@ P6-Net-SMTP
     $client.quit; # 221 closing connection
 
 Only raw mode is currently implemented. A simple mode is coming soon.
+
+SSL/STARTTLS is not supported at this time.
+
+Note that authentication is not yet directly supported - if you need authentication
+you will need to generate the command yourself:
+
+    $client.send("AUTH PLAIN ..."); # 235 Authentication successful
