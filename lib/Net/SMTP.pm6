@@ -1,8 +1,14 @@
 class Net::SMTP;
 
 use Net::SMTP::Raw;
+use Net::SMTP::Simple;
 
-method new(:$server!, :$port = 25, :$raw, :$debug){
+has $.server;
+has $.port;
+has $.debug;
+has $.raw;
+
+method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname){
     my role debug-connection {
         method send($string){
             my $tmpline = $string.substr(0, *-2);
@@ -15,7 +21,7 @@ method new(:$server!, :$port = 25, :$raw, :$debug){
             return $line;
         }
     };
-    my $self = self.bless();
+    my $self = self.bless(:$server, :$port, :$debug, :$raw);
     if $raw {
         $self does Net::SMTP::Raw;
         if $debug {
@@ -25,8 +31,12 @@ method new(:$server!, :$port = 25, :$raw, :$debug){
         }
         $self.conn.input-line-separator = "\r\n";
     } else {
-        die "Simple mode NYI";
-        # $self does Net::SMTP::Simple
+        $self does Net::SMTP::Simple;
+        $self.hostname = $hostname // gethostname;
+        my $started = $self.start;
+        unless $started {
+            return $started;
+        }
     }
     return $self;
 }

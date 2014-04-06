@@ -10,7 +10,11 @@ P6-Net-SMTP
     $client.payload($email); # 250 OK
     $client.quit; # 221 closing connection
 
-Only raw mode is currently implemented. A simple mode is coming soon.
+    my $client = Net::SMTP.new(:server("your.server.here"), :port(587), :debug);
+    $client.auth(...); # NYI
+    $client.send($from, @to, $message);
+    $client.send($message); # find From/To/CC/(BCC)? lines
+    $client.quit;
 
 SSL/STARTTLS is not supported at this time.
 
