@@ -7,8 +7,9 @@ has $.server;
 has $.port;
 has $.debug;
 has $.raw;
+has $.socket-class;
 
-method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname){
+method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname, :$socket-class = IO::Socket::INET){
     my role debug-connection {
         method send($string){
             my $tmpline = $string.substr(0, *-2);
@@ -21,13 +22,13 @@ method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname){
             return $line;
         }
     };
-    my $self = self.bless(:$server, :$port, :$debug, :$raw);
+    my $self = self.bless(:$server, :$port, :$debug, :$raw, :$socket-class);
     if $raw {
         $self does Net::SMTP::Raw;
         if $debug {
-            $self.conn = IO::Socket::INET.new(:host($server), :$port) but debug-connection;
+            $self.conn = $socket-class.new(:host($server), :$port) but debug-connection;
         } else {
-            $self.conn = IO::Socket::INET.new(:host($server), :$port);
+            $self.conn = $socket-class.new(:host($server), :$port);
         }
         $self.conn.input-line-separator = "\r\n";
     } else {

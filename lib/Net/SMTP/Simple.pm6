@@ -45,7 +45,7 @@ class X::Net::SMTP::BadPayload is X::Net::SMTP { has $.nicename = 'Unable to sen
 class X::Net::SMTP::SomeBadTo is X::Net::SMTP::Address { has $.nicename = 'Some to addresses failed to send: '; };
 
 method start {
-    $.raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug));
+    $.raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug), :socket-class($.socket-class));
     my $greeting = $.raw.get-response;
     return fail(X::Net::SMTP::BadGreeting.new($greeting)) unless self!check-response($greeting);
     my $helo = $.raw.ehlo($.hostname);
