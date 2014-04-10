@@ -4,6 +4,9 @@ use Email::Simple;
 
 has $.raw is rw;
 has $.hostname is rw;
+has @.auth-methods is rw;
+has $.auth-methods-raw is rw;
+my @supported-auth = "PLAIN", "LOGIN";
 
 class X::Net::SMTP is Exception {
     has $.server-response;
@@ -45,6 +48,8 @@ class X::Net::SMTP::NoValidTo is X::Net::SMTP::Address { has $.nicename = 'No va
 class X::Net::SMTP::BadData is X::Net::SMTP { has $.nicename = 'Unable to enter DATA mode: '; };
 class X::Net::SMTP::BadPayload is X::Net::SMTP { has $.nicename = 'Unable to send message: '; };
 class X::Net::SMTP::SomeBadTo is X::Net::SMTP::Address { has $.nicename = 'Some to addresses failed to send: '; };
+class X::Net::SMTP::AuthFailed is X::Net::SMTP { has $.nicename = 'Authentication failed: '; };
+class X::Net::SMTP::NoAuthMethods is X::Net::SMTP { has $.nicename = 'No valid authentication methods found.'; };
 
 method start {
     $.raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug), :socket-class($.socket-class));
@@ -55,16 +60,53 @@ method start {
         # OK, either we can't EHLO, or something is screwy...
         # fall back to HELO
         $helo = $.raw.helo($.hostname);
-        return fail(X::Net::SMTP::BadHELO($helo)) unless self!check-response($helo);
+        return fail(X::Net::SMTP::BadHELO.new($helo)) unless self!check-response($helo);
     }
     
     # do stuff with $helo here - get auth methods, *
+    $helo ~~ /250[\s|\-]AUTH (<-[\r]>+)/;
+    if $0 {
+        $.auth-methods-raw = $0.Str;
+        my @list = $0.split(' ');
+        for @list -> $val {
+            if @supported-auth.grep(* eq $val) {
+                @.auth-methods.push($val);
+            }
+        }
+    }
 
     return True;
 }
 
-method auth($username, $password, :$methods, :$disallow) {
-    die "Auth NYI - use .raw.send(\"AUTH ...\")";
+method auth($username, $password, :@methods, :@disallow, :$force) {
+    @methods //= @.auth-methods;
+    for @methods -> $method {
+        # skip an auth method if we don't know how to implement it
+        unless $force || @supported-auth.grep(* eq $method) {
+            next;
+        }
+        # skip an auth method if it was explicitly disallowed
+        if @disallow.grep(* eq $method) {
+            next;
+        }
+
+        my $response = '';
+        given $method {
+            when "PLAIN" { $response = $.raw.auth-plain($username, $password); }
+            when "LOGIN" { $response - $.raw.auth-login($username, $password); }
+        }
+        unless $response {
+            die "Code in Net::SMTP::Simple.auth doesn't handle all auth methods"
+                ~ " it says it does.";
+        }
+
+        if $response.substr(0,1) eq '2' {
+            return True;
+        } else {
+            return fail(X::Net::SMTP::AuthFailed.new($response));
+        }
+    }
+    return fail(X::Net::SMTP::NoAuthMethods.new(''));
 }
 
 multi method send($from, $to, $message, :$keep-going) {

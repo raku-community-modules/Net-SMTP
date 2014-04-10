@@ -22,7 +22,7 @@ commands), and a simple mode (just send this email!).
 
     #simple interface
     my $client = Net::SMTP.new(:server("your.server.here"), :port(587), :debug);
-    $client.auth(...); # NYI
+    $client.auth($username, $password);
     $client.send($from, @to, $message);
     $client.send($message); # find From/To/CC/(BCC)? lines
     $client.quit;
@@ -48,9 +48,33 @@ commands), and a simple mode (just send this email!).
     `$socket-class` allows you to define a class other than IO::Socket::INET to
     be used for network communication.
 
- -  `auth($username, $password, :$methods, :$disallow)`
+ -  `auth-methods()`
 
-    NYI
+    Returns a list of auth methods that are both supported by the server and by
+    this module.
+
+ -  `auth-methods-raw()`
+
+    Returns a raw list of authenticatio methods supported by the server. Response
+    is a space-seperated string.
+
+ -  `auth($username, $password, :@methods, :@disallow, :$force)`
+
+    Authenticates with the SMTP server with the given $username and $password.
+
+    Currently supports LOGIN and PLAIN.
+
+    You can set @methods to explicitly declare which methods you would like to try,
+    in your order of preference. If not set, @methods will default to the result
+    of auth-methods().
+
+    @disallow can be set to disable authentication methods from being attempted
+    (to disable the insecure auth types, for example).
+
+    $force, if set, means that this module won't check the list of server supported
+    authentication types - it will simply assume the server supports everything.
+    This is possibly useful if you have an SMTP server that doesn't support EHLO,
+    but still supports authentication.
 
  -  `send($from, $to, $message, :$keep-going)`
 
