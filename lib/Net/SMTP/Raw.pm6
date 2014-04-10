@@ -1,5 +1,7 @@
 role Net::SMTP::Raw;
 
+use MIME::Base64;
+
 has $.conn is rw;
 
 method get-response() {
@@ -62,4 +64,20 @@ method rset() {
 
 method quit() {
     return self.send("QUIT");
+}
+
+method auth-login($username, $password) {
+    my $encoded = MIME::Base64.encode-str($username);
+    my $resp = self.send("AUTH LOGIN $encoded");
+    if $resp.substr(0,1) eq '3' {
+        my $encoded = MIME::Base64.encode-str($password);
+        return self.send($encoded);
+    } else {
+        return $resp;
+    }
+}
+
+method auth-plain($username, $password) {
+    my $encoded = MIME::Base64.encode-str("$username\0$username\0$password");
+    return self.send("AUTH PLAIN $encoded");
 }

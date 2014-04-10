@@ -93,6 +93,8 @@ commands), and a simple mode (just send this email!).
  -  `send($stuff)`
  -  `ehlo($hostname = gethostname())`
  -  `helo($hostname = gethostname())`
+ -  `auth-login($username, $password)`
+ -  `auth-plain($username, $password)`
  -  `mail-from($address)`
  -  `rcpt-to($address)`
  -  `data`
