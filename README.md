@@ -59,6 +59,13 @@ commands), and a simple mode (just send this email!).
     addresses). If $keep-going is set, will attempt to send the message even if
     one of the recipients fails.
 
+ -  `send($message, :$keep-going)`
+
+    NYI
+
+    Attempts to extract from and to information from the email headers (using
+    Email::Simple), and then calls the above send method.
+
  -  `quit`
 
     Closes the connection to the server.
