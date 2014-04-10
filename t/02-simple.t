@@ -1,7 +1,7 @@
 use v5;
 use Test;
 
-plan 3;
+plan 4;
 
 class SMTPSocket {
     my @server-send = 
