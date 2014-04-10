@@ -78,8 +78,10 @@ method start {
     return True;
 }
 
-method auth($username, $password, :@methods, :@disallow, :$force) {
-    @methods //= @.auth-methods;
+method auth($username, $password, :$methods, :$disallow, :$force) {
+    $methods //= @.auth-methods;
+    my @methods = $methods.list;
+    my @disallow = $disallow.list;
     for @methods -> $method {
         # skip an auth method if we don't know how to implement it
         unless $force || @supported-auth.grep(* eq $method) {
@@ -93,7 +95,7 @@ method auth($username, $password, :@methods, :@disallow, :$force) {
         my $response = '';
         given $method {
             when "PLAIN" { $response = $.raw.auth-plain($username, $password); }
-            when "LOGIN" { $response - $.raw.auth-login($username, $password); }
+            when "LOGIN" { $response = $.raw.auth-login($username, $password); }
         }
         unless $response {
             die "Code in Net::SMTP::Simple.auth doesn't handle all auth methods"
