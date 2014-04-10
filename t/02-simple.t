@@ -11,6 +11,10 @@ class SMTPSocket {
       "250 Ok",
       "354 End data with a single '.'",
       "250 Ok: queued",
+      "250 Ok",
+      "250 Ok",
+      "354 End data with a single '.'",
+      "250 Ok: queued",
       "221 Bye"
       ;
     my @server-get = 
@@ -19,6 +23,10 @@ class SMTPSocket {
       "RCPT TO:bar\@foo.com",
       "DATA",
       "Subject:test\r\nFrom:foo\@bar.com\r\nTo:bar\@foo.com\r\n\r\nTest\r\n.",
+      "MAIL FROM:foo\@bar.com",
+      "RCPT TO:bar\@foo.com",
+      "DATA",
+      "Subject: test\r\nFrom: foo\@bar.com\r\nTo: bar\@foo.com\r\n\r\nTest\r\n.", # Email::Simple adds spaces to headers
       "QUIT"
       ;
 
@@ -43,4 +51,5 @@ use Net::SMTP;
 my $client = Net::SMTP.new(:server('foo.com'), :port(25), :hostname('clientdomain.com'), :socket-class(SMTPSocket));
 ok $client ~~ Net::SMTP, "Created object";
 ok $client.send('foo@bar.com', 'bar@foo.com', "Subject:test\r\nFrom:foo\@bar.com\r\nTo:bar\@foo.com\r\n\r\nTest"), "Send message";
+ok $client.send("Subject:test\r\nFrom:foo\@bar.com\r\nTo:bar\@foo.com\r\n\r\nTest"), "Send message (extracting from/to lines)";
 ok $client.quit, "QUIT";

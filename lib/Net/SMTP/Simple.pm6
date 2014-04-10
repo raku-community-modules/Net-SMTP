@@ -1,5 +1,7 @@
 role Net::SMTP::Simple;
 
+use Email::Simple;
+
 has $.raw is rw;
 has $.hostname is rw;
 
@@ -100,7 +102,19 @@ multi method send($from, $to, $message, :$keep-going) {
 }
 
 multi method send($message, :$keep-going) {
-    die "Extracting to/from/cc NYI";
+    my $parsed;
+    if ($message ~~ Email::Simple) {
+        $parsed = $message;
+    } else {
+        $parsed = Email::Simple.new(~$message);
+    }
+    my $from = $parsed.header('From');
+    my @to = $parsed.header('To');
+    @to.push($parsed.header('CC').list);
+    @to.push($parsed.header('BCC').list);
+    $parsed.header-set('BCC'); # clear the BCC headers
+
+    return self.send($from, @to, $parsed, :$keep-going);
 }
 
 method quit {

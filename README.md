@@ -61,10 +61,11 @@ commands), and a simple mode (just send this email!).
 
  -  `send($message, :$keep-going)`
 
-    NYI
-
     Attempts to extract from and to information from the email headers (using
     Email::Simple), and then calls the above send method.
+
+    Note that if you pass a Email::Simple or Email::MIME object, this method will
+    not create a new Email::Simple, it will just use what you pass.
 
  -  `quit`
 
