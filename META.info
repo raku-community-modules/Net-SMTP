@@ -3,7 +3,7 @@
     "version" : "1.0.0",
     "author" : "github:retupmoca",
     "description" : "Simple SMTP Client",
-    "depends" : [ "Email::Simple", "MIME::Base64" ],
+    "depends" : [ "Email::Simple", "MIME::Base64", "Digest::HMAC" ],
     "provides" : {
         "Net::SMTP" : "lib/Net/SMTP.pm6"
     },

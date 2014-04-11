@@ -1,6 +1,8 @@
 role Net::SMTP::Raw;
 
 use MIME::Base64;
+use Net::SMTP::MD5;
+use Digest::HMAC;
 
 has $.conn is rw;
 
@@ -80,4 +82,16 @@ method auth-login($username, $password) {
 method auth-plain($username, $password) {
     my $encoded = MIME::Base64.encode-str("$username\0$username\0$password");
     return self.send("AUTH PLAIN $encoded");
+}
+
+method auth-cram-md5($username, $password) {
+    my $resp = self.send("AUTH CRAM-MD5");
+    my $data;
+    if $resp.substr(0,1) eq '3' {
+        $data = MIME::Base64.decode-str($resp.substr(4));
+    } else {
+        return $resp;
+    }
+    my $encoded = MIME::Base64.encode-str($username ~ " " ~ hmac-hex($password, $data, &md5));
+    return self.send($encoded);
 }

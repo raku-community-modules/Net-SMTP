@@ -62,7 +62,7 @@ commands), and a simple mode (just send this email!).
 
     Authenticates with the SMTP server with the given $username and $password.
 
-    Currently supports LOGIN and PLAIN.
+    Currently supports CRAM-MD5, LOGIN, PLAIN.
 
     You can set @methods to explicitly declare which methods you would like to try,
     in your order of preference. If not set, @methods will default to the result

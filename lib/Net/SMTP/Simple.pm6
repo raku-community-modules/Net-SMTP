@@ -6,7 +6,7 @@ has $.raw is rw;
 has $.hostname is rw;
 has @.auth-methods is rw;
 has $.auth-methods-raw is rw;
-my @supported-auth = "PLAIN", "LOGIN";
+my @supported-auth = "CRAM-MD5", "PLAIN", "LOGIN";
 
 class X::Net::SMTP is Exception {
     has $.server-response;
@@ -94,6 +94,7 @@ method auth($username, $password, :$methods, :$disallow, :$force) {
 
         my $response = '';
         given $method {
+            when "CRAM-MD5" { $response = $.raw.auth-cram-md5($username, $password); }
             when "PLAIN" { $response = $.raw.auth-plain($username, $password); }
             when "LOGIN" { $response = $.raw.auth-login($username, $password); }
         }
