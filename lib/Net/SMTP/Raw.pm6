@@ -1,7 +1,7 @@
 role Net::SMTP::Raw;
 
 use MIME::Base64;
-use Net::SMTP::MD5;
+use Digest;
 use Digest::HMAC;
 
 has $.conn is rw;
