@@ -41,7 +41,7 @@ use Net::SMTP;
 
 ok True, "Module loaded";
 
-my $client = Net::SMTP.new(:server('foo.com'), :port(25), :raw, :socket-class(SMTPSocket));
+my $client = Net::SMTP.new(:server('foo.com'), :port(25), :raw, :socket(SMTPSocket));
 
 ok $client ~~ Net::SMTP, "Created raw class";
 ok $client.conn.host eq 'foo.com', "with right host";

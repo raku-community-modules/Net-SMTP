@@ -43,7 +43,7 @@ class SMTPSocket {
 
 use Net::SMTP;
 
-my $client = Net::SMTP.new(:server('foo.com'), :port(25), :hostname('clientdomain.com'), :socket-class(SMTPSocket));
+my $client = Net::SMTP.new(:server('foo.com'), :port(25), :hostname('clientdomain.com'), :socket(SMTPSocket));
 ok $client ~~ Net::SMTP, "Created object";
 ok $client.auth('user', 'pass', :methods("PLAIN", "LOGIN")), 'PLAIN auth';
 ok $client.auth('user', 'pass', :methods("LOGIN")), 'LOGIN auth';

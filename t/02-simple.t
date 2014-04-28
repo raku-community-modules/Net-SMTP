@@ -48,7 +48,7 @@ class SMTPSocket {
 
 use Net::SMTP;
 
-my $client = Net::SMTP.new(:server('foo.com'), :port(25), :hostname('clientdomain.com'), :socket-class(SMTPSocket));
+my $client = Net::SMTP.new(:server('foo.com'), :port(25), :hostname('clientdomain.com'), :socket(SMTPSocket));
 ok $client ~~ Net::SMTP, "Created object";
 ok $client.send('foo@bar.com', 'bar@foo.com', "Subject:test\r\nFrom:foo\@bar.com\r\nTo:bar\@foo.com\r\n\r\nTest"), "Send message";
 ok $client.send("Subject:test\r\nFrom:foo\@bar.com\r\nTo:bar\@foo.com\r\n\r\nTest"), "Send message (extracting from/to lines)";

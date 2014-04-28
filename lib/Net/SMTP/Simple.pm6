@@ -52,7 +52,7 @@ class X::Net::SMTP::AuthFailed is X::Net::SMTP { has $.nicename = 'Authenticatio
 class X::Net::SMTP::NoAuthMethods is X::Net::SMTP { has $.nicename = 'No valid authentication methods found.'; };
 
 method start {
-    $.raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug), :socket-class($.socket-class));
+    $.raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug), :socket($.socket));
     my $greeting = $.raw.get-response;
     return fail(X::Net::SMTP::BadGreeting.new($greeting)) unless self!check-response($greeting);
     my $helo = $.raw.ehlo($.hostname);

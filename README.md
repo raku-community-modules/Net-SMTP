@@ -32,7 +32,7 @@ commands), and a simple mode (just send this email!).
 Note that all of these methods should return a true value on success or a Failure
 object if something goes wrong.
 
- -  `new(:$server!, :$port = 25, :$hostname, :$debug, :$socket-class)`
+ -  `new(:$server!, :$port = 25, :$hostname, :$debug, :$socket)`
     
     Creates a new SMTP client and opens the connection to the server.
 
@@ -48,8 +48,9 @@ object if something goes wrong.
 
     `$debug` when set to a true value, will print the SMTP traffic to stderr.
 
-    `$socket-class` allows you to define a class other than IO::Socket::INET to
-    be used for network communication.
+    `$socket` allows you to define a class other than IO::Socket::INET to
+    be used for network communication. If you pass a defined object, Net::SMTP
+    will assume it is a ready-to-use socket.
 
  -  `auth-methods()`
 
@@ -100,7 +101,7 @@ object if something goes wrong.
 
 ## Raw mode methods ##
 
- -  `new(:raw, :$server!, :$port = 25, :$debug, :$socket-class)`
+ -  `new(:raw, :$server!, :$port = 25, :$debug, :$socket)`
 
     Creates a new SMTP client and opens the connection to the server.
 
@@ -113,8 +114,10 @@ object if something goes wrong.
 
     `$debug` when set to a true value, will print the SMTP traffic to stderr.
 
-    `$socket-class` allows you to define a class other than IO::Socket::INET to
-    be used for network communication.
+    `$socket` allows you to define a class other than IO::Socket::INET to
+    be used for network communication. If you pass a defined object, Net::SMTP
+    will assume it is a ready-to-use socket.
+
     
  -  `get-response`
  -  `send($stuff)`
