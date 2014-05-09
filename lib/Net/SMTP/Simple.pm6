@@ -54,13 +54,13 @@ class X::Net::SMTP::NoAuthMethods is X::Net::SMTP { has $.nicename = 'No valid a
 method start {
     $.raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug), :socket($.socket));
     my $greeting = $.raw.get-response;
-    return fail(X::Net::SMTP::BadGreeting.new($greeting)) unless self!check-response($greeting);
+    return fail(X::Net::SMTP::BadGreeting.new($greeting)) unless self._check-response($greeting);
     my $helo = $.raw.ehlo($.hostname);
-    unless self!check-response($helo, :noquit) {
+    unless self._check-response($helo, :noquit) {
         # OK, either we can't EHLO, or something is screwy...
         # fall back to HELO
         $helo = $.raw.helo($.hostname);
-        return fail(X::Net::SMTP::BadHELO.new($helo)) unless self!check-response($helo);
+        return fail(X::Net::SMTP::BadHELO.new($helo)) unless self._check-response($helo);
     }
     
     # do stuff with $helo here - get auth methods, *
@@ -114,19 +114,19 @@ method auth($username, $password, :$methods, :$disallow, :$force) {
 
 multi method send($from, $to, $message, :$keep-going) {
     my $response = $.raw.mail-from($from);
-    return fail(X::Net::SMTP::BadFrom.new($response, $from)) unless self!check-response($response);
+    return fail(X::Net::SMTP::BadFrom.new($response, $from)) unless self._check-response($response);
     my $to-count;
     my @bad-addresses;
     for $to.list {
         $response = $.raw.rcpt-to($_);
         if $keep-going {
-            if self!check-response($response, :noquit) {
+            if self._check-response($response, :noquit) {
                 $to-count++;
             } else {
                 @bad-addresses.push($_);
             }
         } else {
-            return fail(X::Net::SMTP::BadTo.new($response, $_)) unless self!check-response($response);
+            return fail(X::Net::SMTP::BadTo.new($response, $_)) unless self._check-response($response);
             $to-count++;
         }
     }
@@ -135,9 +135,9 @@ multi method send($from, $to, $message, :$keep-going) {
         return fail(X::Net::SMTP::NoValidTo('', @bad-addresses));
     }
     $response = $.raw.data;
-    return fail(X::Net::SMTP::BadData.new($response)) unless self!check-response($response);
+    return fail(X::Net::SMTP::BadData.new($response)) unless self._check-response($response);
     $response = $.raw.payload(~$message);
-    return fail(X::Net::SMTP::BadPayload.new($response)) unless self!check-response($response);
+    return fail(X::Net::SMTP::BadPayload.new($response)) unless self._check-response($response);
 
     if $keep-going && +@bad-addresses {
         return fail(X::Net::SMTP::SomeBadTo.new('', @bad-addresses)) but True;
@@ -168,7 +168,7 @@ method quit {
     return True;
 }
 
-method !check-response($response, :$noquit) {
+method _check-response($response, :$noquit) {
     if $response.substr(0,1) ne '2'|'3' {
         $.raw.rset unless $noquit;
         return False;
