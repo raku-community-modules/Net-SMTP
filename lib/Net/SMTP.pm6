@@ -9,7 +9,11 @@ has $.debug;
 has $.raw;
 has $.socket;
 
-method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname, :$socket = IO::Socket::INET){
+has $.tls;
+has $.ssl;
+has $.plain;
+
+method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname, :$socket = IO::Socket::INET, :$starttls, :$ssl, :$plain){
     my role debug-connection {
         method send($string){
             my $tmpline = $string.substr(0, *-2);
@@ -22,7 +26,7 @@ method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname, :$socket = IO::So
             return $line;
         }
     };
-    my $self = self.bless(:$server, :$port, :$debug, :$raw, :$socket);
+    my $self = self.bless(:$server, :$port, :$debug, :$raw, :$socket, :tls($starttls), :$ssl, :$plain);
     if $raw {
         $self does Net::SMTP::Raw;
         $self.conn = $socket.defined ?? $socket !! $socket.new(:host($server), :$port);

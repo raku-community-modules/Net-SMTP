@@ -3,6 +3,7 @@ role Net::SMTP::Raw;
 use MIME::Base64;
 use Digest;
 use Digest::HMAC;
+use IO::Socket::SSL;
 
 has $.conn is rw;
 
@@ -27,6 +28,14 @@ method ehlo($hostname = gethostname()) {
 
 method helo($hostname = gethostname()) {
     return self.send("HELO $hostname");
+}
+
+method starttls() {
+    return self.send("STARTTLS");
+}
+method switch-to-ssl() {
+    $!conn = IO::Socket::SSL.new(:client-socket($.conn));
+    $!conn.input-line-separator = "\r\n";
 }
 
 method mail-from($address) {

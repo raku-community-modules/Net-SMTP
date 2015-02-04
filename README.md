@@ -3,8 +3,6 @@ P6-Net-SMTP
 
 A pure-perl6 implementation of a SMTP client.
 
-SSL/STARTTLS is not supported at this time.
-
 This module includes two different modes of operation: raw mode (sending raw SMTP
 commands), and a simple mode (just send this email!).
 

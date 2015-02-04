@@ -1,9 +1,9 @@
 {
     "name" : "Net::SMTP",
-    "version" : "1.0.0",
+    "version" : "1.1.0",
     "author" : "github:retupmoca",
     "description" : "Simple SMTP Client",
-    "depends" : [ "Email::Simple", "MIME::Base64", "Digest::HMAC", "Digest" ],
+    "depends" : [ "Email::Simple", "MIME::Base64", "Digest::HMAC", "Digest", "IO::Socket::SSL" ],
     "provides" : {
         "Net::SMTP" : "lib/Net/SMTP.pm6"
     },
