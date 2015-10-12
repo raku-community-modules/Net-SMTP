@@ -178,8 +178,8 @@ multi method send($message, :$keep-going) {
     } else {
         $parsed = Email::Simple.new(~$message);
     }
-    my $from = $parsed.header('From');
-    my @to = $parsed.header('To');
+    my $from = $parsed.header('From').Str;
+    my @to = $parsed.header('To').list;
     @to.push($parsed.header('CC').list);
     @to.push($parsed.header('BCC').list);
     $parsed.header-set('BCC'); # clear the BCC headers
