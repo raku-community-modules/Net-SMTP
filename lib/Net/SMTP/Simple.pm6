@@ -179,12 +179,14 @@ multi method send($message, :$keep-going) {
         $parsed = Email::Simple.new(~$message);
     }
     my $from = $parsed.header('From').Str;
-    my @to = $parsed.header('To').list;
-    @to.push($parsed.header('CC').list);
-    @to.push($parsed.header('BCC').list);
+    my @to = $parsed.header('To').list if $parsed.header('To');
+    my @cc = $parsed.header('CC').list if $parsed.header('CC');
+    my @bcc = $parsed.header('BCC').list if $parsed.header('BCC');
+    @to.push(|@cc);
+    @to.push(|@bcc);
     $parsed.header-set('BCC'); # clear the BCC headers
 
-    return self.send($from, $@to, $parsed, :$keep-going);
+    return self.send($from, @to, $parsed, :keep-going($keep-going));
 }
 
 method quit {
