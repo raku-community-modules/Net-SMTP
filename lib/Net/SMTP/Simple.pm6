@@ -184,7 +184,7 @@ multi method send($message, :$keep-going) {
     @to.push($parsed.header('BCC').list);
     $parsed.header-set('BCC'); # clear the BCC headers
 
-    return self.send($from, @to, $parsed, :$keep-going);
+    return self.send($from, $@to, $parsed, :$keep-going);
 }
 
 method quit {
