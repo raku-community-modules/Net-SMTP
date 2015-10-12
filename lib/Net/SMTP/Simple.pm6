@@ -113,7 +113,7 @@ method auth($username, $password, :$methods is copy, :$disallow, :$force) {
             next;
         }
         # skip an auth method if it was explicitly disallowed
-        if @disallow.grep(* eq $method) {
+        if @disallow && @disallow.grep({$_ && $_ eq $method}) {
             next;
         }
         
