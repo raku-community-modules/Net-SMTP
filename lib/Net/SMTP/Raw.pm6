@@ -35,7 +35,7 @@ method starttls() {
 }
 method switch-to-ssl() {
     $!conn = IO::Socket::SSL.new(:client-socket($.conn));
-    $!conn.input-line-separator = "\r\n";
+    $!conn.nl-in = "\r\n";
 }
 
 method mail-from($address) {
