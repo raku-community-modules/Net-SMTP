@@ -141,7 +141,7 @@ object if something goes wrong.
 
 To install this module, please use zef from https://github.com/ugexe/zef and type
 
-```zef install JSON::Tiny```
+```zef install Net::SMTP```
 
 or from a checkout of this source tree,
 
