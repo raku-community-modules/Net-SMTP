@@ -31,13 +31,13 @@ Note that all of these methods should return a true value on success or a Failur
 object if something goes wrong.
 
  -  `new(:$server!, :$port = 25, :$hostname, :$debug, :$socket, :$ssl, :$starttls, :$plain)`
-    
+
     Creates a new SMTP client and opens the connection to the server.
 
     `$server` is required and defines what server to connect to. Note that this
     does not do a MX lookup - if you need to find the MX server, use Net::DNS or
     similar.
-    
+
     `$port` defaults to 25, and defines what port to connect to on the remote
     server.
 
@@ -49,7 +49,7 @@ object if something goes wrong.
     `$socket` allows you to define a class other than IO::Socket::INET to
     be used for network communication. If you pass a defined object, Net::SMTP
     will assume it is a ready-to-use socket.
-    
+
     By default, this module will use STARTTLS if the server reveals that it is supported,
     otherwise it uses plain-text communication. To override this, you can pass one of
     `$ssl` for an initial SSL connection, `$starttls` to force STARTTLS usage, or
@@ -111,7 +111,7 @@ object if something goes wrong.
     `$server` is required and defines what server to connect to. Note that this
     does not do a MX lookup - if you need to find the MX server, use Net::DNS or
     similar.
-    
+
     `$port` defaults to 25, and defines what port to connect to on the remote
     server.
 
@@ -121,7 +121,7 @@ object if something goes wrong.
     be used for network communication. If you pass a defined object, Net::SMTP
     will assume it is a ready-to-use socket.
 
-    
+
  -  `get-response`
  -  `send($stuff)`
  -  `ehlo($hostname = gethostname())`
@@ -136,3 +136,18 @@ object if something goes wrong.
  -  `payload($mail)`
  -  `rset`
  -  `quit`
+
+ ## Installation and Tests
+
+To install this module, please use zef from https://github.com/ugexe/zef and type
+
+```zef install Net::SMTP```
+
+or from a checkout of this source tree,
+
+```zef install .```
+
+You can run the test suite locally like this:
+
+```prove -e 'perl6 -Ilib' t/```
+
