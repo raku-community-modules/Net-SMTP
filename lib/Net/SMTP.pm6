@@ -34,7 +34,7 @@ method new(:$server!, :$port = 25, :$raw, :$debug, :$hostname, :$socket = IO::So
         $self.conn.nl-in = "\r\n";
     } else {
         $self does Net::SMTP::Simple;
-        $self.hostname = $hostname // gethostname;
+        $self.hostname = $hostname // $*KERNEL.hostname();
         my $started = $self.start;
         unless $started {
             return $started;
