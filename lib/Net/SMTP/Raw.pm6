@@ -22,11 +22,11 @@ method send($stuff) {
     return self.get-response;
 }
 
-method ehlo($hostname = gethostname()) {
+method ehlo($hostname = $*KERNEL.hostname()) {
     return self.send("EHLO $hostname");
 }
 
-method helo($hostname = gethostname()) {
+method helo($hostname = $*KERNEL.hostname()) {
     return self.send("HELO $hostname");
 }
 

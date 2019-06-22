@@ -41,8 +41,8 @@ object if something goes wrong.
     `$port` defaults to 25, and defines what port to connect to on the remote
     server.
 
-    `$hostname` defaults to calling `gethostname()`, and determines the hostname
-    given to the server in the initial HELO or EHLO message
+    `$hostname` defaults to calling `$*KERNEL.hostname()`, and determines the
+    hostname given to the server in the initial HELO or EHLO message
 
     `$debug` when set to a true value, will print the SMTP traffic to stderr.
 
@@ -124,8 +124,8 @@ object if something goes wrong.
     
  -  `get-response`
  -  `send($stuff)`
- -  `ehlo($hostname = gethostname())`
- -  `helo($hostname = gethostname())`
+ -  `ehlo($hostname = $*KERNEL.hostname())`
+ -  `helo($hostname = $*KERNEL.hostname())`
  -  `starttls()`
  -  `switch-to-ssl()`
  -  `auth-login($username, $password)`
