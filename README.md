@@ -1,7 +1,7 @@
-P6-Net-SMTP
+Net-SMTP
 ===========
 
-A pure-perl6 implementation of a SMTP client.
+A pure Raku implementation of a SMTP client.
 
 This module includes two different modes of operation: raw mode (sending raw SMTP
 commands), and a simple mode (just send this email!).
