@@ -101,7 +101,7 @@ method auth-cram-md5($username, $password) {
         $data = MIME::Base64.decode-str($resp.substr(4));
     }
     else {
-        $resp
+        return $resp;
     }
     my $encoded := MIME::Base64.encode-str(
       $username ~ " " ~ hmac-hex($password, $data, &md5)
