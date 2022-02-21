@@ -12,10 +12,11 @@ my class X::Net::SMTP is Exception {
     has $.server-response;
     has $.nicename;
     method message {
-        return ($.nicename // self.^name) ~ " The server responded with\n" ~ $.server-response;
+        ($.nicename // self.^name)
+          ~ " The server responded with\n" ~ $.server-response
     }
-    method new($response) {
-        self.bless(:server-response($response));
+    method new($server-response) {
+        self.bless(:$server-response)
     }
 }
 my class X::Net::SMTP::Address is Exception {
@@ -33,31 +34,60 @@ my class X::Net::SMTP::Address is Exception {
             $response ~= "\nThe server responded with\n"
                           ~ $.server-response;
         }
-        return $response;
+        $response
     }
-    method new($response, $address) {
-        self.bless(:server-response($response), :$address);
+    method new($server-response, $address) {
+        self.bless(:$server-response, :$address)
     }
 }
 
-my class X::Net::SMTP::BadGreeting is X::Net::SMTP { has $.nicename = 'Bad greeting from server: '; };
-my class X::Net::SMTP::BadHELO is X::Net::SMTP { has $.nicename = 'Unable to successfully HELO: '; };
-my class X::Net::SMTP::BadFrom is X::Net::SMTP::Address { has $.nicename = 'Bad from address: '; };
-my class X::Net::SMTP::BadTo is X::Net::SMTP::Address { has $.nicename = 'Bad to address: '; };
-my class X::Net::SMTP::NoValidTo is X::Net::SMTP::Address { has $.nicename = 'No valid to addresses: '; };
-my class X::Net::SMTP::BadData is X::Net::SMTP { has $.nicename = 'Unable to enter DATA mode: '; };
-my class X::Net::SMTP::BadPayload is X::Net::SMTP { has $.nicename = 'Unable to send message: '; };
-my class X::Net::SMTP::SomeBadTo is X::Net::SMTP::Address { has $.nicename = 'Some to addresses failed to send: '; };
-my class X::Net::SMTP::AuthFailed is X::Net::SMTP { has $.nicename = 'Authentication failed: '; };
-my class X::Net::SMTP::NoAuthMethods is X::Net::SMTP { has $.nicename = 'No valid authentication methods found.'; };
+my class X::Net::SMTP::BadGreeting is X::Net::SMTP {
+    has $.nicename = 'Bad greeting from server: ';
+}
+my class X::Net::SMTP::BadHELO is X::Net::SMTP {
+    has $.nicename = 'Unable to successfully HELO: ';
+}
+my class X::Net::SMTP::BadFrom is X::Net::SMTP::Address {
+    has $.nicename = 'Bad from address: ';
+}
+my class X::Net::SMTP::BadTo is X::Net::SMTP::Address {
+    has $.nicename = 'Bad to address: ';
+}
+my class X::Net::SMTP::NoValidTo is X::Net::SMTP::Address {
+    has $.nicename = 'No valid to addresses: ';
+}
+my class X::Net::SMTP::BadData is X::Net::SMTP {
+    has $.nicename = 'Unable to enter DATA mode: ';
+}
+my class X::Net::SMTP::BadPayload is X::Net::SMTP {
+    has $.nicename = 'Unable to send message: ';
+}
+my class X::Net::SMTP::SomeBadTo is X::Net::SMTP::Address {
+    has $.nicename = 'Some to addresses failed to send: ';
+}
+my class X::Net::SMTP::AuthFailed is X::Net::SMTP {
+    has $.nicename = 'Authentication failed: ';
+}
+my class X::Net::SMTP::NoAuthMethods is X::Net::SMTP {
+    has $.nicename = 'No valid authentication methods found.';
+}
 
 method start {
-    $.smtp-raw = self.new(:server($.server), :port($.port), :raw, :debug($.debug), :socket($.socket), :ssl($.ssl), :starttls($.tls), :plain($.plain));
+    $.smtp-raw = self.new(
+      :server($.server),
+      :port($.port),
+      :raw, :debug($.debug),
+      :socket($.socket),
+      :ssl($.ssl),
+      :starttls($.tls),
+      :plain($.plain)
+    );
     $.smtp-raw.switch-to-ssl() if $.ssl;
     
     my $in-starttls = False;
     my $greeting = $.smtp-raw.get-response;
-    return fail(X::Net::SMTP::BadGreeting.new($greeting)) unless self._check-response($greeting);
+    return fail(X::Net::SMTP::BadGreeting.new($greeting))
+      unless self._check-response($greeting);
     
     loop {
         my $helo = $.smtp-raw.ehlo($.hostname);
@@ -65,7 +95,8 @@ method start {
             # OK, either we can't EHLO, or something is screwy...
             # fall back to HELO
             $helo = $.smtp-raw.helo($.hostname);
-            return fail(X::Net::SMTP::BadHELO.new($helo)) unless self._check-response($helo);
+            fail X::Net::SMTP::BadHELO.new($helo)
+              unless self._check-response($helo);
         }
         
         # do stuff with $helo here - get auth methods, *
@@ -90,17 +121,17 @@ method start {
             if $starttls ~~ /^220/ {
                 $.smtp-raw.switch-to-ssl();
                 $in-starttls = True;
-            } else {
-                if $.tls {
-                    return fail(X::Net::SMTP::BadHELO($starttls));
-                }
+            }
+            else {
+                fail X::Net::SMTP::BadHELO.new($starttls)
+                  if $.tls;
             }
         }
         
         last unless $in-starttls;
     }
 
-    return True;
+    True
 }
 
 method auth($username, $password, :$methods is copy, :$disallow, :$force) {
@@ -130,16 +161,19 @@ method auth($username, $password, :$methods is copy, :$disallow, :$force) {
         
         if $response.substr(0,1) eq '2' {
             return True;
-        } else {
-            return fail(X::Net::SMTP::AuthFailed.new($response));
+        }
+        else {
+            fail X::Net::SMTP::AuthFailed.new($response);
         }
     }
-    return fail(X::Net::SMTP::NoAuthMethods.new(''));
+    fail X::Net::SMTP::NoAuthMethods.new('');
 }
 
 multi method send($from, $to, $message, :$keep-going) {
     my $response = $.smtp-raw.mail-from($from);
-    return fail(X::Net::SMTP::BadFrom.new($response, $from)) unless self._check-response($response);
+    fail X::Net::SMTP::BadFrom.new($response, $from)
+      unless self._check-response($response);
+
     my $to-count;
     my @bad-addresses;
     for $to.list {
@@ -147,27 +181,32 @@ multi method send($from, $to, $message, :$keep-going) {
         if $keep-going {
             if self._check-response($response, :noquit) {
                 $to-count++;
-            } else {
+            }
+            else {
                 @bad-addresses.push($_);
             }
-        } else {
+        }
+        else {
             return fail(X::Net::SMTP::BadTo.new($response, $_)) unless self._check-response($response);
             $to-count++;
         }
     }
     unless $to-count {
         $.smtp-raw.rset;
-        return fail(X::Net::SMTP::NoValidTo('', @bad-addresses));
+        fail X::Net::SMTP::NoValidTo('', @bad-addresses);
     }
     $response = $.smtp-raw.data;
-    return fail(X::Net::SMTP::BadData.new($response)) unless self._check-response($response);
+    fail X::Net::SMTP::BadData.new($response)
+      unless self._check-response($response);
     $response = $.smtp-raw.payload(~$message);
-    return fail(X::Net::SMTP::BadPayload.new($response)) unless self._check-response($response);
+    fail X::Net::SMTP::BadPayload.new($response)
+      unless self._check-response($response);
 
     if $keep-going && +@bad-addresses {
-        return fail(X::Net::SMTP::SomeBadTo.new('', @bad-addresses)) but True;
-    } else {
-        return True;
+        fail X::Net::SMTP::SomeBadTo.new('', @bad-addresses) but True;
+    }
+    else {
+        True
     }
 }
 
@@ -175,7 +214,8 @@ multi method send($message, :$keep-going) {
     my $parsed;
     if ($message ~~ Email::Simple) {
         $parsed = $message;
-    } else {
+    }
+    else {
         $parsed = Email::Simple.new(~$message);
     }
     my $from = $parsed.header('From').Str;
@@ -190,13 +230,13 @@ multi method send($message, :$keep-going) {
     $from = $0 || $from ;
     @to .= map({ $_ ~~ /\<(.*)\>/; $0 || $_ });
 
-    return self.send($from, @to, $parsed, :keep-going($keep-going));
+    self.send($from, @to, $parsed, :keep-going($keep-going))
 }
 
 method quit {
     $.smtp-raw.quit;
     $.smtp-raw.conn.close;
-    return True;
+    True
 }
 
 method _check-response($response, :$noquit) {
@@ -204,5 +244,7 @@ method _check-response($response, :$noquit) {
         $.smtp-raw.rset unless $noquit;
         return False;
     }
-    return True;
+    True
 }
+
+# vim: expandtab shiftwidth=4

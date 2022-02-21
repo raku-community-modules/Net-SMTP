@@ -1,14 +1,30 @@
 {
-    "perl" : "6.*",
-    "name" : "Net::SMTP",
-    "version" : "1.2.0",
-    "author" : "github:retupmoca",
-    "description" : "Simple SMTP Client",
-    "depends" : [ "Email::Simple", "MIME::Base64", "Digest::HMAC", "Digest", "IO::Socket::SSL" ],
-    "provides" : {
-        "Net::SMTP" : "lib/Net/SMTP.pm6",
-        "Net::SMTP::Raw" : "lib/Net/SMTP/Raw.pm6",
-        "Net::SMTP::Simple" : "lib/Net/SMTP/Simple.pm6"
-    },
-    "source-url" : "git://github.com/retupmoca/P6-Net-SMTP.git"
+  "auth": "zef:raku-community-modules",
+  "author": "Andrew Egeler",
+  "build-depends": [
+  ],
+  "depends": [
+    "Email::Simple",
+    "MIME::Base64",
+    "Digest::HMAC",
+    "Digest",
+    "IO::Socket::SSL"
+  ],
+  "description": "Simple SMTP Client",
+  "license": "NOASSERTION",
+  "name": "Net::SMTP",
+  "perl": "6.*",
+  "provides": {
+    "Net::SMTP": "lib/Net/SMTP.rakumod",
+    "Net::SMTP::Raw": "lib/Net/SMTP/Raw.rakumod",
+    "Net::SMTP::Simple": "lib/Net/SMTP/Simple.rakumod"
+  },
+  "resources": [
+  ],
+  "source-url": "git://github.com/retupmoca/P6-Net-SMTP.git",
+  "tags": [ "SMTP", "EMAIL", "CLIENT"
+  ],
+  "test-depends": [
+  ],
+  "version": "1.2.1"
 }

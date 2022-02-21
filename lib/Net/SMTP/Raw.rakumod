@@ -14,24 +14,24 @@ method get-response() {
         $line = $.conn.get;
         $response ~= "\r\n"~$line;
     }
-    return $response;
+    $response
 }
 
 method send($stuff) {
     $.conn.print($stuff ~ "\r\n");
-    return self.get-response;
+    self.get-response
 }
 
 method ehlo($hostname = $*KERNEL.hostname()) {
-    return self.send("EHLO $hostname");
+    self.send("EHLO $hostname")
 }
 
 method helo($hostname = $*KERNEL.hostname()) {
-    return self.send("HELO $hostname");
+    self.send("HELO $hostname")
 }
 
 method starttls() {
-    return self.send("STARTTLS");
+    self.send("STARTTLS")
 }
 method switch-to-ssl() {
     $!conn = IO::Socket::SSL.new(:client-socket($.conn));
@@ -39,15 +39,15 @@ method switch-to-ssl() {
 }
 
 method mail-from($address) {
-    return self.send("MAIL FROM:$address");
+    self.send("MAIL FROM:$address")
 }
 
 method rcpt-to($address) {
-    return self.send("RCPT TO:$address");
+    self.send("RCPT TO:$address")
 }
 
 method data() {
-    return self.send("DATA");
+    self.send("DATA")
 }
 
 method payload($mail is copy) {
@@ -66,15 +66,15 @@ method payload($mail is copy) {
     if $mail.substr(*-2,2) ne "\r\n" {
         $mail ~= "\r\n";
     }
-    return self.send($mail ~ ".");
+    self.send($mail ~ ".")
 }
 
 method rset() {
-    return self.send("RSET");
+    self.send("RSET")
 }
 
 method quit() {
-    return self.send("QUIT");
+    self.send("QUIT")
 }
 
 method auth-login($username, $password) {
@@ -82,25 +82,31 @@ method auth-login($username, $password) {
     my $resp = self.send("AUTH LOGIN $encoded");
     if $resp.substr(0,1) eq '3' {
         my $encoded = MIME::Base64.encode-str($password);
-        return self.send($encoded);
-    } else {
-        return $resp;
+        self.send($encoded)
+    }
+    else {
+        $resp
     }
 }
 
 method auth-plain($username, $password) {
-    my $encoded = MIME::Base64.encode-str("$username\0$username\0$password");
-    return self.send("AUTH PLAIN $encoded");
+    my $encoded := MIME::Base64.encode-str("$username\0$username\0$password");
+    self.send("AUTH PLAIN $encoded");
 }
 
 method auth-cram-md5($username, $password) {
-    my $resp = self.send("AUTH CRAM-MD5");
+    my $resp := self.send("AUTH CRAM-MD5");
     my $data;
     if $resp.substr(0,1) eq '3' {
         $data = MIME::Base64.decode-str($resp.substr(4));
-    } else {
-        return $resp;
     }
-    my $encoded = MIME::Base64.encode-str($username ~ " " ~ hmac-hex($password, $data, &md5));
-    return self.send($encoded);
+    else {
+        $resp
+    }
+    my $encoded := MIME::Base64.encode-str(
+      $username ~ " " ~ hmac-hex($password, $data, &md5)
+    );
+    self.send($encoded)
 }
+
+# vim: expandtab shiftwidth=4

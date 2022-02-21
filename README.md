@@ -137,17 +137,18 @@ object if something goes wrong.
  -  `rset`
  -  `quit`
 
- ## Installation and Tests
+AUTHOR
+=======
 
-To install this module, please use zef from https://github.com/ugexe/zef and type
+Andrew Egeler
 
-```zef install Net::SMTP```
+Source can be located at: https://github.com/raku-community-modules/Net-SMTP . Comments and Pull Requests are welcome.
 
-or from a checkout of this source tree,
+COPYRIGHT AND LICENSE
+=====================
 
-```zef install .```
+Copyright 2014 - 2021 Andrew Egeler
 
-You can run the test suite locally like this:
+Copyright 2022 Raku Community
 
-```prove -e 'perl6 -Ilib' t/```
-
+This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
