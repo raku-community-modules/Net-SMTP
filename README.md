@@ -153,4 +153,4 @@ Copyright 2014 - 2021 Andrew Egeler
 
 Copyright 2022 Raku Community
 
-This library is free software; you can redistribute it and/or modify it under the Artistic License 2.0.
+All files in this repository are licensed under the terms of Create Commons License; for details please see the LICENSE file
