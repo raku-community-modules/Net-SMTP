@@ -1,3 +1,5 @@
+[![Actions Status](https://github.com/raku-community-modules/Net-SMTP/workflows/test/badge.svg)](https://github.com/raku-community-modules/Net-SMTP/actions)
+
 Net-SMTP
 ===========
 
