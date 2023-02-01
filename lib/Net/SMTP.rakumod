@@ -1,4 +1,4 @@
-unit class Net::SMTP:ver<1.2.1>:auth<zef:raku-community-modules>;
+unit class Net::SMTP:ver<1.2.2>:auth<zef:raku-community-modules>;
 
 has $.server;
 has $.port;

@@ -1,7 +1,7 @@
 unit role Net::SMTP::Raw;
 
 use MIME::Base64;
-use Digest;
+use Digest::MD5;
 use Digest::HMAC;
 use IO::Socket::SSL;
 

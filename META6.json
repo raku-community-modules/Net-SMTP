@@ -7,7 +7,7 @@
     "Email::Simple",
     "MIME::Base64",
     "Digest::HMAC",
-    "Digest",
+    "Digest::MD5",
     "IO::Socket::SSL"
   ],
   "description": "Simple SMTP Client",
@@ -29,5 +29,5 @@
   ],
   "test-depends": [
   ],
-  "version": "1.2.1"
+  "version": "1.2.2"
 }
