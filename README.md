@@ -1,4 +1,4 @@
-[![Actions Status](https://github.com/raku-community-modules/Net-SMTP/actions/workflows/linux.yml/badge.svg)](https://github.com/raku-community-modules/Net-SMTP/actions) [![Actions Status](https://github.com/raku-community-modules/Net-SMTP/actions/workflows/macos.yml/badge.svg)](https://github.com/raku-community-modules/Net-SMTP/actions) [![Actions Status](https://github.com/raku-community-modules/Net-SMTP/actions/workflows/windows.yml/badge.svg)](https://github.com/raku-community-modules/Net-SMTP/actions)
+[![Actions Status](https://github.com/raku-community-modules/Net-SMTP/actions/workflows/linux.yml/badge.svg)](https://github.com/raku-community-modules/Net-SMTP/actions) [![Actions Status](https://github.com/raku-community-modules/Net-SMTP/actions/workflows/macos.yml/badge.svg)](https://github.com/raku-community-modules/Net-SMTP/actions)
 
 NAME
 ====

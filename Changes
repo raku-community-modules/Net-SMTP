@@ -1,6 +1,8 @@
 Revision history for Net::SMTP
 
 {{$NEXT}}
+
+1.2.3  2024-12-11T12:11:04+01:00
     - Updated to match changes in Digest distribution
     - Modernized pod
     - Some copy-editing on the documentation
