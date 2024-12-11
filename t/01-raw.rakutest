@@ -1,4 +1,3 @@
-use v6;
 use Test;
 
 plan 12;
@@ -55,3 +54,5 @@ ok $client.rcpt-to('bar@foo.com').substr(0,1) eq '2', 'RCPT TO';
 ok $client.data.substr(0,1) eq '3', 'DATA';
 ok $client.payload("Subject:test\r\nFrom:foo\@bar.com\r\nTo:bar\@foo.com\r\n\r\nTest").substr(0,1) eq '2', 'Message send';
 ok $client.quit.substr(0,1) eq '2', 'QUIT';
+
+# vim: expandtab shiftwidth=4

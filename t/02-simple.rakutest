@@ -1,4 +1,3 @@
-use v6;
 use Test;
 
 plan 5;
@@ -70,3 +69,5 @@ ok $client.send('foo@bar.com', 'bar@foo.com', "Subject:test\r\nFrom:foo\@bar.com
 ok $client.send("Subject:test\r\nFrom:foo\@bar.com\r\nTo:bar\@foo.com\r\n\r\nTest"), "Send message (extracting from/to lines)";
 ok $client.send("Subject:test\r\nFrom:foo\@bar.com\r\nTo:Bar <bar\@foo.com>\r\n\r\nTest"), "Send message (extracting from/to lines with name format)";
 ok $client.quit, "QUIT";
+
+# vim: expandtab shiftwidth=4

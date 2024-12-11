@@ -1,6 +1,10 @@
 Revision history for Net::SMTP
 
 {{$NEXT}}
+    - Updated to match changes in Digest distribution
+    - Modernized pod
+    - Some copy-editing on the documentation
+    - Added separate CI badge for each OS
 
 1.2.2  2023-02-01T15:43:14+01:00
     - follow the Digest->Digest::MD5 module change

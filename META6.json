@@ -10,7 +10,7 @@
     "Digest::MD5",
     "IO::Socket::SSL"
   ],
-  "description": "Simple SMTP Client",
+  "description": "A pure Raku implementation of an SMTP client",
   "license": "NOASSERTION",
   "name": "Net::SMTP",
   "perl": "6.*",
@@ -21,7 +21,7 @@
   },
   "resources": [
   ],
-  "source-url": "git://github.com/retupmoca/P6-Net-SMTP.git",
+  "source-url": "https://github.com/raku-community-modules/Net-SMTP.git",
   "tags": [
     "SMTP",
     "EMAIL",

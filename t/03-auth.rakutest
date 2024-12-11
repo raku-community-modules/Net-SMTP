@@ -1,4 +1,3 @@
-use v6;
 use Test;
 
 plan 5;
@@ -49,3 +48,5 @@ ok $client.auth('user', 'pass', :methods("PLAIN", "LOGIN")), 'PLAIN auth';
 ok $client.auth('user', 'pass', :methods("LOGIN")), 'LOGIN auth';
 ok $client.auth('user@example.com', 'password', :methods("CRAM-MD5")), 'CRAM-MD5 auth';
 ok $client.quit, "QUIT";
+
+# vim: expandtab shiftwidth=4
